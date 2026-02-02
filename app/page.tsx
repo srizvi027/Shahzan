@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Lottie from 'lottie-react';
-import { ChevronDown, Code2, Palette, Bot, Zap, Mail, Github, Linkedin, ExternalLink, Sparkles } from 'lucide-react';
+import { ChevronDown, Code2, Palette, Bot, Zap, Mail, Github, Linkedin, ExternalLink, Sparkles, MessageCircle } from 'lucide-react';
 import { codingAnimation, creativityAnimation } from '../lib/animations';
 
 export default function Home() {
@@ -136,12 +136,14 @@ export default function Home() {
           </div>
 
           <div className="flex justify-center gap-4 mb-12">
-            <button 
-              onClick={() => scrollToSection('contact')}
-              className="px-8 py-4 bg-cyan-500 rounded-full font-semibold text-white"
+            <a
+              href="https://wa.me/923318059058?text=Hi%20Shahzan,%20I%20would%20like%20to%20hire%20you%20for%20a%20project"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-cyan-500 rounded-full font-semibold text-white hover:bg-cyan-600 transition-colors duration-300"
             >
               Hire Me
-            </button>
+            </a>
             <button 
               onClick={() => scrollToSection('projects')}
               className="px-8 py-4 bg-slate-900 border border-cyan-400 rounded-full font-semibold text-white"
@@ -435,10 +437,12 @@ export default function Home() {
 
           <div className="flex flex-wrap gap-6 justify-center mb-12">
             <a
-              href="mailto:shahzan@prowingz.com"
-              className="px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-semibold text-white hover:shadow-2xl hover:shadow-cyan-500/50 transition-all hover:scale-105 inline-flex items-center gap-3"
+              href="https://wa.me/923318059058?text=Hi%20Shahzan,%20I%20would%20like%20to%20discuss%20a%20project%20with%20you"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-10 py-5 bg-gradient-to-r from-green-500 to-green-600 rounded-full font-semibold text-white hover:shadow-2xl hover:shadow-green-500/50 transition-all hover:scale-105 inline-flex items-center gap-3"
             >
-              <Mail className="w-5 h-5" />
+              <MessageCircle className="w-5 h-5" />
               Get In Touch
             </a>
             <a
@@ -481,6 +485,17 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Floating WhatsApp Button */}
+      <a
+        href="https://wa.me/923318059058?text=Hi%20Shahzan,%20I%20would%20like%20to%20discuss%20a%20project%20with%20you"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 animate-pulse"
+        title="Chat on WhatsApp"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </a>
 
       <style jsx global>{`
         @keyframes fadeInUp {
