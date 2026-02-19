@@ -4,10 +4,28 @@ import React, { useState, useEffect } from 'react';
 import { ChevronDown, Code2, Palette, Bot, Zap, Mail, Github, Linkedin, ExternalLink, Sparkles, X, Calendar, Users, TrendingUp, ShoppingCart, BarChart3, Settings } from 'lucide-react';
 import Image from 'next/image';
 
+// Define the Project interface
+interface Project {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  fullDescription: string;
+  image: string;
+  technologies: string[];
+  features: string[];
+  results: string[];
+  demoUrl: string;
+  githubUrl: string;
+  duration: string;
+  client: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectFilter, setProjectFilter] = useState('all');
 
   // Enhanced project data structure
@@ -831,7 +849,7 @@ export default function Home() {
                   <div>
                     <h4 className="font-semibold text-white mb-3">Technologies Used</h4>
                     <div className="flex flex-wrap gap-2">
-                      {selectedProject.technologies.map((tech) => (
+                      {selectedProject.technologies.map((tech: string) => (
                         <span key={tech} className="px-3 py-1 bg-cyan-500/10 text-cyan-400 rounded-full text-sm border border-cyan-400/30">
                           {tech}
                         </span>
@@ -843,7 +861,7 @@ export default function Home() {
                   <div>
                     <h4 className="font-semibold text-white mb-3">Key Features</h4>
                     <div className="grid grid-cols-1 gap-2">
-                      {selectedProject.features.map((feature, index) => (
+                      {selectedProject.features.map((feature: string, index: number) => (
                         <div key={index} className="flex items-center gap-3">
                           <div className="w-2 h-2 bg-cyan-400 rounded-full" />
                           <span className="text-gray-300">{feature}</span>
@@ -856,7 +874,7 @@ export default function Home() {
                   <div>
                     <h4 className="font-semibold text-white mb-3">Results & Impact</h4>
                     <div className="space-y-3">
-                      {selectedProject.results.map((result, index) => (
+                      {selectedProject.results.map((result: string, index: number) => (
                         <div key={index} className="flex items-start gap-3 p-3 bg-green-500/10 border border-green-400/20 rounded-lg">
                           <TrendingUp className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
                           <span className="text-gray-300">{result}</span>
