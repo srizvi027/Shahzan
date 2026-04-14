@@ -27,6 +27,16 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectFilter, setProjectFilter] = useState('all');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    projectType: 'E-commerce Development',
+    budget: '$5,000 - $10,000',
+    message: '',
+    botcheck: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Enhanced project data structure
   const projects = [
@@ -127,6 +137,60 @@ export default function Home() {
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: '3d9e1db1-58d6-4afd-bf1e-7e9d17615413',
+          subject: 'New Portfolio Contact Message',
+          from_name: formData.name,
+          name: formData.name,
+          email: formData.email,
+          project_type: formData.projectType,
+          budget_range: formData.budget,
+          message: formData.message,
+          botcheck: formData.botcheck
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitStatus({ type: 'success', message: 'Message sent successfully.' });
+        setFormData({
+          name: '',
+          email: '',
+          projectType: 'E-commerce Development',
+          budget: '$5,000 - $10,000',
+          message: '',
+          botcheck: ''
+        });
+      } else {
+        setSubmitStatus({ type: 'error', message: result.message || 'Something went wrong. Please try again.' });
+      }
+    } catch {
+      setSubmitStatus({ type: 'error', message: 'Unable to send the message right now. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
@@ -212,7 +276,7 @@ export default function Home() {
 
           {/* Social Links */}
           <div className="flex justify-center gap-6">
-            <a href="https://github.com/srizvi027" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-colors">
+            <a href="https://github.com/srizvi027/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-colors">
               <Github className="w-6 h-6" />
             </a>
             <a href="https://www.linkedin.com/in/syed-shahzan-hussain-rizvi/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-colors">
@@ -269,24 +333,38 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-cyan-400/20 p-8 rounded-2xl">
-              <div className="space-y-6">
-                {[
-                  { icon: Code2, title: 'Full-Stack Mastery', desc: 'End-to-end development with modern frameworks' },
-                  { icon: Palette, title: 'E-commerce Expert', desc: 'Custom Shopify & WordPress solutions' },
-                  { icon: Bot, title: 'AI Integration', desc: 'Intelligent automation and AI-powered features' },
-                  { icon: Zap, title: 'Performance Focused', desc: 'Optimized, lightning-fast applications' }
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-4">
-                    <div className="p-3 bg-cyan-500/20 rounded-lg">
-                      <item.icon className="w-6 h-6 text-cyan-400" />
+            <div className="space-y-8 flex flex-col items-center md:items-stretch">
+              <div className="flex justify-center w-full">
+                <div className="relative h-64 w-64 md:h-80 md:w-80 overflow-hidden rounded-full border-4 border-cyan-400 bg-slate-900 shadow-[0_0_35px_rgba(34,211,238,0.25)]">
+                  <Image
+                    src="/shahzan.jpg"
+                    alt="Syed Shahzan Hussain"
+                    fill
+                    priority
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+
+              <div className="w-full bg-slate-900/40 backdrop-blur-sm border border-cyan-400/20 p-8 rounded-2xl">
+                <div className="space-y-6">
+                  {[
+                    { icon: Code2, title: 'Full-Stack Mastery', desc: 'End-to-end development with modern frameworks' },
+                    { icon: Palette, title: 'E-commerce Expert', desc: 'Custom Shopify & WordPress solutions' },
+                    { icon: Bot, title: 'AI Integration', desc: 'Intelligent automation and AI-powered features' },
+                    { icon: Zap, title: 'Performance Focused', desc: 'Optimized, lightning-fast applications' }
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-4">
+                      <div className="p-3 bg-cyan-500/20 rounded-lg">
+                        <item.icon className="w-6 h-6 text-cyan-400" />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-xl font-semibold text-white mb-2">{item.title}</h3>
+                        <p className="text-gray-400 text-sm">{item.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-display text-xl font-semibold text-white mb-2">{item.title}</h3>
-                      <p className="text-gray-400 text-sm">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -630,12 +708,27 @@ export default function Home() {
             <div className="bg-slate-900/40 backdrop-blur-sm border border-cyan-400/20 p-8 rounded-2xl">
               <h3 className="font-display text-2xl font-bold text-white mb-6">Send me a message</h3>
               
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <input
+                  type="checkbox"
+                  name="botcheck"
+                  checked={formData.botcheck === 'true'}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, botcheck: e.target.checked ? 'true' : '' }))
+                  }
+                  className="hidden"
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">Name*</label>
                     <input 
-                      type="text" 
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
                       required
                       className="w-full px-4 py-3 bg-slate-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all"
                       placeholder="Your full name"
@@ -644,7 +737,10 @@ export default function Home() {
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">Email*</label>
                     <input 
-                      type="email" 
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
                       required
                       className="w-full px-4 py-3 bg-slate-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all"
                       placeholder="shahzan@prowingz.com"
@@ -654,7 +750,12 @@ export default function Home() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Project Type</label>
-                  <select className="w-full px-4 py-3 bg-slate-800/50 border border-gray-600 rounded-lg text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all">
+                  <select
+                    name="projectType"
+                    value={formData.projectType}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-slate-800/50 border border-gray-600 rounded-lg text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all"
+                  >
                     <option>E-commerce Development</option>
                     <option>Web Application</option>
                     <option>WordPress Development</option>
@@ -667,7 +768,12 @@ export default function Home() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Budget Range</label>
-                  <select className="w-full px-4 py-3 bg-slate-800/50 border border-gray-600 rounded-lg text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all">
+                  <select
+                    name="budget"
+                    value={formData.budget}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-slate-800/50 border border-gray-600 rounded-lg text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all"
+                  >
                     <option>$5,000 - $10,000</option>
                     <option>$10,000 - $25,000</option>
                     <option>$25,000 - $50,000</option>
@@ -679,19 +785,35 @@ export default function Home() {
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Project Details*</label>
                   <textarea 
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
                     required
                     rows={5}
                     className="w-full px-4 py-3 bg-slate-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all resize-none"
                     placeholder="Tell me about your project requirements, goals, and timeline..."
                   ></textarea>
                 </div>
+
+                {submitStatus && (
+                  <div
+                    className={`rounded-lg border px-4 py-3 text-sm ${
+                      submitStatus.type === 'success'
+                        ? 'border-green-500/40 bg-green-500/10 text-green-300'
+                        : 'border-red-500/40 bg-red-500/10 text-red-300'
+                    }`}
+                  >
+                    {submitStatus.message}
+                  </div>
+                )}
                 
                 <button 
                   type="submit"
-                  className="w-full px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white hover:shadow-2xl hover:shadow-cyan-500/50 transition-all hover:scale-[1.02] inline-flex items-center justify-center gap-3"
+                  disabled={isSubmitting}
+                  className="w-full px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white hover:shadow-2xl hover:shadow-cyan-500/50 transition-all hover:scale-[1.02] inline-flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   <Mail className="w-5 h-5" />
-                  Send Message
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>
@@ -750,10 +872,10 @@ export default function Home() {
               <div className="bg-slate-900/40 backdrop-blur-sm border border-cyan-400/20 p-8 rounded-2xl">
                 <h3 className="font-display text-xl font-bold text-white mb-4">Connect with me</h3>
                 <div className="flex gap-4">
-                  <a href="https://github.com/shahzan" target="_blank" rel="noopener noreferrer" className="p-4 bg-cyan-500/10 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/20 transition-all">
+                  <a href="https://github.com/srizvi027/" target="_blank" rel="noopener noreferrer" className="p-4 bg-cyan-500/10 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/20 transition-all">
                     <Github className="w-6 h-6" />
                   </a>
-                  <a href="https://linkedin.com/in/shahzan" target="_blank" rel="noopener noreferrer" className="p-4 bg-cyan-500/10 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/20 transition-all">
+                  <a href="https://www.linkedin.com/in/syed-shahzan-hussain-rizvi/" target="_blank" rel="noopener noreferrer" className="p-4 bg-cyan-500/10 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/20 transition-all">
                     <Linkedin className="w-6 h-6" />
                   </a>
                   <a href="mailto:shahzan@prowingz.com" className="p-4 bg-cyan-500/10 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/20 transition-all">
